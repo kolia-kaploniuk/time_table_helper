@@ -1,1 +1,1 @@
-clock: node index.js
+clock: npm run start
