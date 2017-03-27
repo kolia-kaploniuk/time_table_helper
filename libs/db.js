@@ -1,5 +1,6 @@
 const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
+const config = require('./../config');
 
 // Mix-ins
 // Abstract subclasses or mix-ins are templates for classes. An ECMAScript class can only have a single superclass, so multiple inheritance from tooling classes, for example, is not possible. The functionality must be provided by the superclass.
@@ -20,7 +21,7 @@ class Database {
 	constructor() {
 
 		// defaul url
-		this.url = 'mongodb://localhost:27017/oneu'
+		this.url = config.db
 	}
 
 	// generator method
@@ -43,29 +44,44 @@ class Database {
 	 * @param  {Function} callback
 	 * @return {[type]}              [description]
 	 */
-	async insert (data, collection) {
-		// , callback = () => {}
-		let db = await MongoClient.connect(this.url);
-		try {
-	        return await db.collection(collection).insert(data);
-	    } finally {
-	        db.close();
-	    }
+	insert (data, collection, callback = () => {}) {
+		MongoClient.connect(this.url, (err, db) => {
+			db.collection(collection).insert(data, (err, res) => {
+				callback(err, res);
+				db.close();
+			})
+		})
+	}
+
+	retrive (query, collection, callback = () => {}) {
 		// MongoClient.connect(this.url, (err, db) => {
-		// 	db.collection(collection).insert(data, (err, res) => {
+		// 	db.collection(collection).find(query).toArray((err, res) => {
 		// 		callback(err, res);
 		// 		db.close();
 		// 	})
 		// })
+		return new Promise((resolve, reject) => {
+			MongoClient.connect(this.url, (err, db) => {
+				db.collection(collection).find(query).toArray((err = {error: 'error'}, res) => {
+					db.close();
+					if (err) return reject(err);
+					return res;
+				})
+			})
+	    })
 	}
+	
+	// todo: make an algorithm for updating only necessary data - with argument date - rewrite data for the date - with algorithm - cell - update onty this cell
+	updateCollection (data, collection, callback = () => {}) {
+		MongoClient.connect(this.url, (err, db) => {
 
-	async retrive (query, collection) {
-		let db = await MongoClient.connect(this.url);
-		try {
-			return await db.collection(collection).find(query).toArray();
-		} finally {
-			db.close();
-		}
+			// todo: rewrite it
+			db.collection(collection).remove();
+			db.collection(collection).insert(data, (err, res) => {
+					callback(err, res);
+					db.close();
+			})
+		})
 	}
 }
 

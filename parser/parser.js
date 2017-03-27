@@ -34,7 +34,10 @@ const findDate = (str, array, data) => {
 			// 	str,
 			// 	field: data[firstLetter + i].w
 			// }
-			return new Date(fixDateFormat(data[firstLetter + i].w)).toDateString();
+			return {
+				date: new Date(fixDateFormat(data[firstLetter + i].w)).toDateString(),
+				index: i
+			}
 		}
 	}
 }
@@ -66,9 +69,11 @@ class Parser {
 				workbook[key].w && defineLecture(workbook[key].w))
 			.map(field => {
 				let lecture = workbook[field].w.split('\n');
+				let date = findDate(field, dateFileds, workbook);
 				return {
+					number: Number(field.substring(1)) - date.index,
 					name: lecture[0],
-					date: findDate(field, dateFileds, workbook),
+					date: date.date,
 					place: lecture[1],
 					teacher: lecture[2]
 				};

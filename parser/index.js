@@ -14,6 +14,7 @@ let parser = new Parser({
 
 let data = parser.parse();
 
-// todo: ids? can I put data twice?
-mongo.insert(data, 'timetable', (err, res) => 
+// todo: clear collection before pasting - cos when timetable changed - we should remoe all unnecessary data
+// 
+mongo.updateCollection(data, 'timetable', (err, res) => 
 	console.log('res: ', res));
