@@ -1,11 +1,4 @@
 const xlsx = require('xlsx');
-/*
-The static keyword defines a static method for a class. 
-Static methods are called without instantiating their 
-class and are also not callable when the class is 
-instantiated. Static methods are often used to create 
-utility functions for an app
- */
 
 // должны быть приватными методами класса
 const fixDateFormat = (str) => {
@@ -26,14 +19,7 @@ const findDate = (str, array, data) => {
 	let firstLetter = str.substring(0, 1);
 
 	for (let i = number; i >= 0; i--) {
-
 		if (array.indexOf(firstLetter + i) !== -1) {
-			// return {
-			// 	number,
-			// 	firstLetter,
-			// 	str,
-			// 	field: data[firstLetter + i].w
-			// }
 			return {
 				date: new Date(fixDateFormat(data[firstLetter + i].w)).toDateString(),
 				index: i
@@ -41,13 +27,6 @@ const findDate = (str, array, data) => {
 		}
 	}
 }
-
-// let lectureModel = {
-// 	name: '',
-// 	date: '',
-// 	place: '',
-// 	teacher: ''
-// }
 
 class Parser {
 	constructor(opts) {
