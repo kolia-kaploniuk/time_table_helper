@@ -8,6 +8,7 @@
   "main": "index.js",
   "author": "kolia.kaploniuk@gmail.com",
   "dependencies": {
+    "cron": "^1.2.1",
     "jsdoc": "^3.4.3",
     "mongodb": "^2.2.25",
     "node-vkapi": "^2.1.0",
@@ -18,11 +19,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
+    "url": "https://github.com/kolia-kaploniuk/time_table_helper"
   },
   "keywords": [
     "node",
-    "heroku",
+    "heroku"
   ],
   "license": "MIT"
 }

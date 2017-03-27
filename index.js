@@ -1,5 +1,6 @@
 const http = require('http');
 const VKApi = require('node-vkapi');
+const CronJob = require('cron').CronJob;
 const Database = require('./libs/db');
 const config = require('./config');
 
@@ -76,10 +77,16 @@ let destination = (arg === config.args.prod) ?
 	{chat_id: config.vk.accounts.group} :
 	{user_id: config.vk.accounts.me}
 
-mongo.get(query, 'timetable')
-	.then(res => {
-		console.log('res: ', res);
-		post(convertToMessage(res), destination);
-	}).catch(err => {
-		console.log('err: ', err);
-	});
+const postData = () => {
+	mongo.get(query, 'timetable')
+		.then(res => {
+			console.log('res: ', res);
+			post(convertToMessage(res), destination);
+		}).catch(err => {
+			console.log('err: ', err);
+		});
+	}
+
+new CronJob('* * * * * *', function() {
+  postData();
+}, null, true, 'America/Los_Angeles');
