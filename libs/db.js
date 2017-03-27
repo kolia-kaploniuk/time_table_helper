@@ -32,13 +32,13 @@ class Database {
 	 * @param  {string}   collection
 	 * @param  {Function} callback 
 	 */
-	retrive (query, collection, callback = () => {}) {
+	get (query, collection) {
 		return new Promise((resolve, reject) => {
 			MongoClient.connect(this.url, (err, db) => {
 				db.collection(collection).find(query).toArray((err = {error: 'error'}, res) => {
 					db.close();
 					if (err) return reject(err);
-					return res;
+					return resolve(res);
 				})
 			})
 	    })

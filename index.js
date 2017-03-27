@@ -3,6 +3,8 @@ const VKApi = require('node-vkapi');
 const Database = require('./libs/db');
 const config = require('./config');
 
+const arg = process.argv[2];
+
 // declare Vk api
 const VK = new VKApi({
   app: {
@@ -20,8 +22,11 @@ const mongo = new Database({
 	url: config.db
 });
 
-let today = new Date();
-today.setDate(today.getDate() + 1);
+// get new date
+let date = new Date();
+
+// get tomorrow
+date.setDate(date.getDate() + 1);
 
 /**
  * template for one string
@@ -37,34 +42,44 @@ const lectureLineTmp = lecture =>
  * @return {string}      message, ready to send
  */
 const convertToMessage = data => 
-	!data && data.length !== 0 ? `Рассписание на завтра - ${ today.toDateString() }: \n\n ${ data.map(elem => lectureLineTmp(elem)).join('\n') }` : 'Завтра пар нет.';
+	data && data.length !== 0 ? `Рассписание на завтра - ${ date.toDateString() }: \n\n ${ data.map(elem => lectureLineTmp(elem)).join('\n') }` : 'Завтра пар нет.';
  
+const uniqueID = () => Math.floor(Math.random() * 1000000000);
+
  /**
   * post smth to chat
   * @param  {string} data - data to post
   * @param  {number} id - id to whom we should post
   * @return {[type]}      [description]
   */
-const post = (data, id) => {
+const post = (data, params) => {
 	VK.auth.user({
 	  scope: ['offline', 'messages']
 	}).then(token => {
-		VK.call('messages.send', {
-	  		chat_id: id,
-	  		message: data,
-	  		random_id: Math.random() * 100
-	  }).then(res => {
+		VK.call('messages.send', Object.assign({
+			message: data,
+			random_id: uniqueID()
+		}, params)).then(res => {
 	    console.log('res: ', res)})
+	  .catch(err => {
+	    console.log('err: ', err)})
 	})
 	.catch(error => {
 	  console.log(error)});
 }
 
 let query = {
-	date: today.toDateString()
+	date: date.toDateString()
 }
 
-mongo.retrive(query, 'timetable', (err, res) => {
-	console.log('res: ', res);
-	post(convertToMessage(res), config.vk.accounts.group);
-});
+let destination = (arg === config.args.prod) ? 
+	{chat_id: config.vk.accounts.group} :
+	{user_id: config.vk.accounts.me}
+
+mongo.get(query, 'timetable')
+	.then(res => {
+		console.log('res: ', res);
+		post(convertToMessage(res), destination);
+	}).catch(err => {
+		console.log('err: ', err);
+	});
