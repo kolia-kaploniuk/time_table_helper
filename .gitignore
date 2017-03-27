@@ -8,7 +8,6 @@ npm-debug.log
 .DS_Store
 /db
 /**/*.xls
-config.js
 
 # Docker
 Dockerfile
