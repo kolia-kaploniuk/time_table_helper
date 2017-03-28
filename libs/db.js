@@ -1,20 +1,7 @@
 const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
-let config;
-
-const prod = process.argv[2] === config.args.prod;
-
-if (!prod) {
-	config = require('./config');
-}
-
 
 class Database {
-	constructor() {
-
-		// defaul url
-		this.url = prod ? process.env.PROD_MONGODB : config.app.db
-	}
 
 	/**
 	 * Insert in a given db connection
