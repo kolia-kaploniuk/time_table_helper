@@ -92,6 +92,6 @@ const postData = () => {
 
 const getCurrentDate = () => new Date();
 
-new CronJob(config.app.schedule, () => {
+new CronJob(process.env.SCHEDULE, () => {
   	postData();
 }, null, true, 'Europe/Kiev');
