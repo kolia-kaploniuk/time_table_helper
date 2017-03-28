@@ -7,7 +7,7 @@ class Database {
 	constructor() {
 
 		// defaul url
-		this.url = config.db
+		this.url = config.app.db
 	}
 
 	/**

@@ -20,14 +20,16 @@ const VK = new VKApi({
 
 // declare mongo db instance
 const mongo = new Database({
-	url: config.db
+	url: config.app.db
 });
 
-// get new date
-let date = new Date();
-
 // get tomorrow
-date.setDate(date.getDate() + 1);
+const tomorrow = () => {
+	let today = new Date();
+
+	today.setDate(today.getDate() + 1);
+	return today.toDateString()
+}
 
 /**
  * template for one string
@@ -43,7 +45,7 @@ const lectureLineTmp = lecture =>
  * @return {string}      message, ready to send
  */
 const convertToMessage = data => 
-	data && data.length !== 0 ? `Рассписание на завтра - ${ date.toDateString() }: \n\n ${ data.map(elem => lectureLineTmp(elem)).join('\n') }` : 'Завтра пар нет.';
+	data && data.length !== 0 ? `Рассписание на завтра - ${ tomorrow() }: \n\n ${ data.map(elem => lectureLineTmp(elem)).join('\n') }` : 'Завтра пар нет.';
  
 const uniqueID = () => Math.floor(Math.random() * 1000000000);
 
@@ -70,7 +72,7 @@ const post = (data, params) => {
 }
 
 let query = {
-	date: date.toDateString()
+	date: tomorrow()
 }
 
 let destination = prod ? 
@@ -87,6 +89,8 @@ const postData = () => {
 		});
 	}
 
-new CronJob('00 53 21 * * 1-5', () => {
-  postData();
+const getCurrentDate = () => new Date();
+
+new CronJob(config.app.schedule, () => {
+  	postData();
 }, null, true, 'Europe/Kiev');

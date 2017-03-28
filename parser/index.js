@@ -3,7 +3,7 @@ const Database = require('./../libs/db');
 const config = require('./../config');
 
 let mongo = new Database({
-	url: config.db
+	url: config.app.db
 });
 
 let parser = new Parser({
