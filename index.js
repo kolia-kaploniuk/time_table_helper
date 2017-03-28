@@ -4,7 +4,7 @@ const CronJob = require('cron').CronJob;
 const Database = require('./libs/db');
 const config = require('./config');
 
-const arg = process.argv[2];
+const prod = process.argv[2] === config.args.prod;
 
 // declare Vk api
 const VK = new VKApi({
@@ -73,7 +73,7 @@ let query = {
 	date: date.toDateString()
 }
 
-let destination = (arg === config.args.prod) ? 
+let destination = prod ? 
 	{chat_id: config.vk.accounts.group} :
 	{user_id: config.vk.accounts.me}
 
@@ -87,6 +87,6 @@ const postData = () => {
 		});
 	}
 
-new CronJob('* * * * * *', function() {
+new CronJob('* * * * * *', () => {
   postData();
 }, null, true, 'America/Los_Angeles');

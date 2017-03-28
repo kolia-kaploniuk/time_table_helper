@@ -1,5 +1,5 @@
 module.exports = {
-	db: 'mongodb://localhost:3000/oneu',
+	db: 'mongodb://kaploniuk:Red5freedom78@ds011765.mlab.com:11765/time_table-oneu',
 	args: {
 			prod: '--prod',
 			dev: '--dev'
@@ -10,7 +10,7 @@ module.exports = {
 			secret: '1GvE6gHNL7WmlR6tml1p'
 		}, 
 		auth: {
-			login: 'kolia97kaploniuk@gmail.com', 
+			login: 'kolia97kaploniuk@gmail.com',
 			pass: 'toixrn7F',
 		},
 		accounts: {
