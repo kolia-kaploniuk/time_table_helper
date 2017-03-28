@@ -39,16 +39,16 @@ class Parser {
 			workbook = file.Sheets[file.SheetNames[0]];
 
 		// get fileds with date
-		let dateFileds = Object.keys(workbook).filter(key =>
+		let dateFields = Object.keys(workbook).filter(key =>
 			workbook[key].w && defineDate(workbook[key].w))
 		
 		// get all lectures
-		let lectures = Object.keys(workbook)
+		return Object.keys(workbook)
 			.filter(key =>
 				workbook[key].w && defineLecture(workbook[key].w))
 			.map(field => {
 				let lecture = workbook[field].w.split('\n');
-				let date = findDate(field, dateFileds, workbook);
+				let date = findDate(field, dateFields, workbook);
 				return {
 					number: Number(field.substring(1)) - date.index,
 					name: lecture[0],
@@ -57,8 +57,6 @@ class Parser {
 					teacher: lecture[2]
 				};
 			})
-
-		return lectures;
 	}
 }
 

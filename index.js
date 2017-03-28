@@ -87,6 +87,6 @@ const postData = () => {
 		});
 	}
 
-new CronJob('* * * * * *', () => {
+new CronJob('00 53 21 * * 1-5', () => {
   postData();
-}, null, true, 'America/Los_Angeles');
+}, null, true, 'Europe/Kiev');
