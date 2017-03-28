@@ -1,13 +1,19 @@
 const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
-const config = require('./../config');
+let config;
+
+const prod = process.argv[2] === config.args.prod;
+
+if (!prod) {
+	config = require('./config');
+}
 
 
 class Database {
 	constructor() {
 
 		// defaul url
-		this.url = config.app.db
+		this.url = prod ? process.env.PROD_MONGODB : config.app.db
 	}
 
 	/**

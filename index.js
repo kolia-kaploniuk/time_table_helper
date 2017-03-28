@@ -2,10 +2,14 @@ const http = require('http');
 const VKApi = require('node-vkapi');
 const CronJob = require('cron').CronJob;
 const Database = require('./libs/db');
-const config = require('./config');
+let config;
 
 const prod = process.argv[2] === config.args.prod;
 const me = process.argv[2] === config.args.me || process.argv[3] === config.args.me
+
+if (!prod) {
+	config = require('./config');
+}
 
 // declare Vk api
 const VK = new VKApi({
