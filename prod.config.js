@@ -1,4 +1,4 @@
-modele.exports = {
+module.exports = {
     args: {
         prod: '--prod',
         dev: '--dev',
