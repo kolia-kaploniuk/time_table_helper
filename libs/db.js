@@ -2,6 +2,10 @@ const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
 
 class Database {
+	constructor(url) {
+
+		this.url = url
+	}
 
 	/**
 	 * Insert in a given db connection
