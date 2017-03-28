@@ -5,22 +5,23 @@ const Database = require('./libs/db');
 const config = require('./config');
 
 const prod = process.argv[2] === config.args.prod;
+const me = process.argv[2] === config.args.me || process.argv[3] === config.args.me
 
 // declare Vk api
 const VK = new VKApi({
   app: {
-    id: config.vk.app.id,
-    secret: config.vk.app.secret
+    id: prod ? process.env.VK_APP_ID : config.vk.app.id,
+    secret: prod ? process.env.VK_APP_SECRET : config.vk.app.secret
   }, 
   auth: {
-    login: config.vk.auth.login, 
-    pass: config.vk.auth.pass
+    login: prod ? process.env.VK_AUTH_LOGIN : config.vk.auth.login, 
+    pass: prod ? process.env.VK_AUTH_PASS : config.vk.auth.pass
   }
 });
 
 // declare mongo db instance
 const mongo = new Database({
-	url: process.env.PROD_MONGODB
+	url: prod ? process.env.PROD_MONGODB : config.app.db
 });
 
 // get tomorrow
@@ -75,9 +76,9 @@ let query = {
 	date: tomorrow()
 }
 
-let destination = prod ? 
-	{chat_id: config.vk.accounts.group} :
-	{user_id: config.vk.accounts.me}
+let destination = me ? 
+	{user_id: prod ? process.env.VK_ACC_ME : config.vk.accounts.me} :
+	{chat_id: prod ? process.env.VK_ACC_GROUP : config.vk.accounts.group}
 
 const postData = () => {
 	mongo.get(query, 'timetable')

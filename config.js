@@ -5,7 +5,8 @@ module.exports = {
 	},
 	args: {
 			prod: '--prod',
-			dev: '--dev'
+			dev: '--dev',
+			me: '--me'
 		},
 	vk: {
 		app: {
