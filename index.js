@@ -20,7 +20,7 @@ const VK = new VKApi({
 
 // declare mongo db instance
 const mongo = new Database({
-	url: config.app.db
+	url: process.env.PROD_MONGODB
 });
 
 // get tomorrow
