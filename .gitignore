@@ -7,7 +7,6 @@ npm-debug.log
 *.dev
 .DS_Store
 db/
-parser/
 config.js
 
 # Docker
