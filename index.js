@@ -2,31 +2,25 @@ const http = require('http');
 const VKApi = require('node-vkapi');
 const CronJob = require('cron').CronJob;
 const Database = require('./libs/db');
-const prod_config = require('./prod.config');
-let config;
 
-const prod = process.argv[2] === prod_config.args.prod;
-const me = process.argv[2] === prod_config.args.me || process.argv[3] === prod_config.args.me
-
-if (!prod) {
-	config = require('./config');
-}
+const config = process.argv[2] === '--prod' ? require('./prod.config') : require('./config');
+const me = process.argv[2] === config.args.me || process.argv[3] === config.args.me
 
 // declare Vk api
 const VK = new VKApi({
   app: {
-    id: prod ? process.env.VK_APP_ID : config.vk.app.id,
-    secret: prod ? process.env.VK_APP_SECRET : config.vk.app.secret
-  }, 
+    id: config.vk.app.id,
+    secret: config.vk.app.secret
+  },
   auth: {
-    login: prod ? process.env.VK_AUTH_LOGIN : config.vk.auth.login, 
-    pass: prod ? process.env.VK_AUTH_PASS : config.vk.auth.pass
+    login: config.vk.auth.login, 
+    pass: config.vk.auth.pass
   }
 });
 
 // declare mongo db instance
 const mongo = new Database({
-	url: prod ? process.env.PROD_MONGODB : config.app.db
+	url: config.app.db
 });
 
 // get tomorrow
@@ -82,8 +76,8 @@ let query = {
 }
 
 let destination = me ? 
-	{user_id: prod ? process.env.VK_ACC_ME : config.vk.accounts.me} :
-	{chat_id: prod ? process.env.VK_ACC_GROUP : config.vk.accounts.group}
+	{user_id: config.vk.accounts.me} :
+	{chat_id: config.vk.accounts.group}
 
 const postData = () => {
 	mongo.get(query, 'timetable')
@@ -95,8 +89,6 @@ const postData = () => {
 		});
 	}
 
-const getCurrentDate = () => new Date();
-
-new CronJob(process.env.SCHEDULE, () => {
+new CronJob(config.app.schedule, () => {
   	postData();
 }, null, true, 'Europe/Kiev');

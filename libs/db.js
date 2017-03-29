@@ -2,9 +2,9 @@ const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
 
 class Database {
-	constructor(url) {
+	constructor(args) {
 
-		this.url = url
+		this.url = args.url
 	}
 
 	/**
