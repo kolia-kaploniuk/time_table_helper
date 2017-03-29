@@ -14,7 +14,8 @@ const VK = new VKApi({
   },
   auth: {
     login: config.vk.auth.login, 
-    pass: config.vk.auth.pass
+    pass: config.vk.auth.pass,
+    phone: config.vk.auth.phone
   }
 });
 

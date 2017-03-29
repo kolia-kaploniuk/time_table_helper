@@ -16,6 +16,7 @@ module.exports = {
 		auth: {
 			login: process.env.VK_AUTH_LOGIN, 
 			pass: process.env.VK_AUTH_PASS,
+			phone: process.env.VK_AUTH_PHONE
 		},
 		accounts: {
 			me: process.env.VK_ACC_ME,
