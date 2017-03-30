@@ -30,7 +30,7 @@ const tomorrow = () => {
 
 	today.setDate(today.getDate() + 1);
 	return today.toDateString()
-}
+};
 
 /**
  * template for one string
@@ -45,8 +45,8 @@ const lectureLineTmp = lecture =>
  * @param  {object} data data from db
  * @return {string}      message, ready to send
  */
-const convertToMessage = data => 
-	data && data.length !== 0 ? `Рассписание на завтра - ${ tomorrow() }: \n\n ${ data.map(elem => lectureLineTmp(elem)).join('\n') }` : 'Завтра пар нет.';
+const convertToMessage = (data, date) =>
+	data && data.length !== 0 ? `Рассписание на завтра - ${ date }: \n\n ${ data.map(elem => lectureLineTmp(elem)).join('\n') }` : 'Завтра пар нет.';
  
 const uniqueID = () => Math.floor(Math.random() * 1000000000);
 
@@ -72,24 +72,23 @@ const post = (data, params) => {
 	  console.log(error)});
 }
 
-let query = {
-	date: tomorrow()
-}
+let query = date => ({ date });
 
 let destination = me ? 
 	{user_id: config.vk.accounts.me} :
-	{chat_id: config.vk.accounts.group}
+	{chat_id: config.vk.accounts.group};
 
-const postData = () => {
-	mongo.get(query, 'timetable')
+const postData = date => {
+	mongo.get(query(date), 'timetable')
 		.then(res => {
 			console.log('res: ', res);
-			post(convertToMessage(res), destination);
+			console.log('date: ', date);
+			// post(convertToMessage(res, date), destination);
 		}).catch(err => {
 			console.log('err: ', err);
 		});
 	}
 
 new CronJob(config.app.schedule, () => {
-  	postData();
+  	postData(tomorrow());
 }, null, true, 'Europe/Kiev');
